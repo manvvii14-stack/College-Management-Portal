@@ -1,0 +1,2122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>College Event Management Portal - CSE326 Project</title>
+
+  <!-- ==================== PURE CSS3 ==================== -->
+  <style>
+    /* 1. CSS Variables for Light Mode (Default) */
+    :root {
+      --primary-navy: #1e3a8a;
+      --accent-blue: #2563eb;
+      --accent-hover: #1d4ed8;
+      --bg-color: #f3f4f6;
+      --card-bg: #ffffff;
+      --text-main: #1f2937;
+      --text-muted: #4b5563;
+      --border-color: #d1d5db;
+      --error-red: #dc2626;
+      --success-green: #16a34a;
+      --warning-amber: #d97706;
+      --shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      --radius: 10px;
+    }
+
+    /* 2. Dark Mode Variables (Toggled by JavaScript) */
+    body.dark-mode {
+      --primary-navy: #0f172a;
+      --accent-blue: #3b82f6;
+      --accent-hover: #2563eb;
+      --bg-color: #111827;
+      --card-bg: #1f2937;
+      --text-main: #f9fafb;
+      --text-muted: #9ca3af;
+      --border-color: #374151;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    }
+
+    /* 3. Basic Reset & Page Typography */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      line-height: 1.6;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .container {
+      width: 92%;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+
+    /* 4. Header & Sticky Navigation Bar */
+    header {
+      background-color: var(--primary-navy);
+      color: #ffffff;
+      padding: 14px 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .logo {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #ffffff;
+      text-decoration: none;
+      letter-spacing: 0.3px;
+    }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    nav a {
+      color: #e5e7eb;
+      text-decoration: none;
+      font-size: 0.92rem;
+      font-weight: 500;
+      padding: 7px 11px;
+      border-radius: 6px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    nav a:hover {
+      background-color: rgba(255, 255, 255, 0.16);
+      color: #ffffff;
+    }
+
+    .theme-btn {
+      background-color: var(--accent-blue);
+      color: #ffffff;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .theme-btn:hover {
+      background-color: var(--accent-hover);
+    }
+
+    /* 5. Notification Toast Banner (Replaces browser alert()) */
+    #statusBanner {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: var(--success-green);
+      color: #ffffff;
+      padding: 14px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 0.94rem;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+      z-index: 999;
+      max-width: 350px;
+    }
+
+    #statusBanner.error-banner {
+      background-color: var(--error-red);
+    }
+
+    /* 6. Hero Section & Live Countdown Timer */
+    .hero {
+      background: linear-gradient(135deg, #1e3a8a, #2563eb);
+      color: #ffffff;
+      padding: 48px 20px;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .hero-tag {
+      display: inline-block;
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 5px 14px;
+      border-radius: 20px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .hero h1 {
+      font-size: 2.15rem;
+      margin-bottom: 10px;
+    }
+
+    .hero p {
+      max-width: 740px;
+      margin: 0 auto 22px auto;
+      font-size: 1rem;
+      color: #e0e7ff;
+    }
+
+    .countdown-label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #dbeafe;
+      margin-bottom: 10px;
+    }
+
+    .countdown-box {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .time-unit {
+      background-color: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.28);
+      padding: 12px 18px;
+      border-radius: 10px;
+      min-width: 82px;
+    }
+
+    .time-unit span {
+      display: block;
+      font-size: 1.7rem;
+      font-weight: 700;
+      line-height: 1.1;
+    }
+
+    .time-unit small {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #dbeafe;
+    }
+
+    /* 7. Common Section Headings & Role Tags */
+    section {
+      padding: 34px 0;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .role-label {
+      display: inline-block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--accent-blue);
+      margin-bottom: 4px;
+    }
+
+    .section-title {
+      font-size: 1.65rem;
+      color: var(--text-main);
+      border-left: 5px solid var(--accent-blue);
+      padding-left: 12px;
+      margin-bottom: 5px;
+    }
+
+    .section-subtitle {
+      color: var(--text-muted);
+      font-size: 0.94rem;
+    }
+
+    /* 8. Search, Category & Club Filter Bar */
+    .filter-bar {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr auto;
+      gap: 12px;
+      margin-bottom: 24px;
+      background-color: var(--card-bg);
+      padding: 16px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+    }
+
+    .filter-bar input,
+    .filter-bar select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.94rem;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+    }
+
+    /* 9. Reusable Buttons & Badges */
+    .btn {
+      display: inline-block;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.92rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+      transition: background-color 0.2s ease;
+    }
+
+    .btn-primary {
+      background-color: var(--accent-blue);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-primary:disabled {
+      background-color: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .btn-full {
+      width: 100%;
+    }
+
+    .btn-secondary {
+      background-color: #6b7280;
+      color: #ffffff;
+    }
+
+    .btn-secondary:hover {
+      background-color: #4b5563;
+    }
+
+    .btn-success {
+      background-color: var(--success-green);
+      color: #ffffff;
+      padding: 6px 12px;
+      font-size: 0.83rem;
+    }
+
+    .btn-warning {
+      background-color: var(--warning-amber);
+      color: #ffffff;
+      padding: 6px 12px;
+      font-size: 0.83rem;
+    }
+
+    .btn-danger {
+      background-color: var(--error-red);
+      color: #ffffff;
+      padding: 6px 12px;
+      font-size: 0.83rem;
+    }
+
+    .btn-danger:hover {
+      background-color: #b91c1c;
+    }
+
+    .badge-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-bottom: 10px;
+    }
+
+    .badge-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 3px 10px;
+      border-radius: 15px;
+      font-size: 0.76rem;
+      font-weight: 600;
+    }
+
+    .badge-category {
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+
+    .badge-featured {
+      background-color: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-verified {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+
+    .badge-pending {
+      background-color: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-fee {
+      background-color: #ede9fe;
+      color: #5b21b6;
+    }
+
+    /* 10. Event Cards Grid */
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .event-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .event-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+    }
+
+    .event-card.featured-card {
+      border: 2px solid var(--accent-blue);
+    }
+
+    .event-card h3 {
+      font-size: 1.15rem;
+      margin-bottom: 6px;
+      color: var(--text-main);
+    }
+
+    .event-club {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--accent-blue);
+      margin-bottom: 8px;
+    }
+
+    .event-desc {
+      font-size: 0.89rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .event-details {
+      list-style: none;
+      font-size: 0.86rem;
+      margin-bottom: 16px;
+      color: var(--text-main);
+    }
+
+    .event-details li {
+      margin-bottom: 4px;
+    }
+
+    .event-details strong {
+      color: var(--text-muted);
+    }
+
+    /* 11. Clubs & Societies Grid */
+    .clubs-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+
+    .club-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .club-card h3 {
+      font-size: 1.15rem;
+      color: var(--text-main);
+      margin-bottom: 6px;
+    }
+
+    .club-meta {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--accent-blue);
+      margin-bottom: 10px;
+    }
+
+    .club-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 16px;
+    }
+
+    /* 12. Admin Dashboard Summary Cards & Tables */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-top: 4px solid var(--accent-blue);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent-blue);
+      line-height: 1.2;
+    }
+
+    .stat-label {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      font-weight: 600;
+      margin-top: 4px;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+      background-color: var(--card-bg);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border-color);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+
+    th, td {
+      padding: 13px 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.9rem;
+    }
+
+    th {
+      background-color: var(--primary-navy);
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .action-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .empty-message {
+      text-align: center;
+      padding: 28px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* 13. Forms (Organizer Add Event, Registration Modal, Sponsor Inquiry) */
+    .form-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 12px;
+    }
+
+    .form-group.full-width {
+      grid-column: span 2;
+    }
+
+    .form-group label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--text-main);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 10px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      font-size: 0.94rem;
+      font-family: inherit;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: 2px solid var(--accent-blue);
+      border-color: var(--accent-blue);
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .checkbox-group input {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .error-msg {
+      color: var(--error-red);
+      font-size: 0.81rem;
+      margin-top: 4px;
+      min-height: 16px;
+    }
+
+    .success-box {
+      display: none;
+      background-color: #dcfce7;
+      color: #166534;
+      border: 1px solid #86efac;
+      padding: 12px 16px;
+      border-radius: 6px;
+      margin-top: 14px;
+      font-weight: 600;
+      font-size: 0.91rem;
+    }
+
+    /* 14. Sponsors & Business Partners Section */
+    .sponsor-logos {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .sponsor-logo-box {
+      background-color: var(--card-bg);
+      border: 1px dashed var(--border-color);
+      border-radius: var(--radius);
+      padding: 16px;
+      text-align: center;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    .sponsor-logo-box small {
+      display: block;
+      font-weight: 500;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .packages-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .package-card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow);
+    }
+
+    .package-card h3 {
+      color: var(--accent-blue);
+      margin-bottom: 8px;
+      font-size: 1.12rem;
+    }
+
+    .package-card p {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+    }
+
+    .package-price {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--text-main);
+    }
+
+    /* 15. Student Registration Modal Popup */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.62);
+      z-index: 500;
+      justify-content: center;
+      align-items: center;
+      padding: 15px;
+      overflow-y: auto;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background-color: var(--card-bg);
+      color: var(--text-main);
+      width: 100%;
+      max-width: 520px;
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+      max-height: 92vh;
+      overflow-y: auto;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 1.7rem;
+      color: var(--text-muted);
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    /* 16. Footer */
+    footer {
+      background-color: var(--primary-navy);
+      color: #e5e7eb;
+      text-align: center;
+      padding: 26px 15px;
+      margin-top: 40px;
+      font-size: 0.9rem;
+    }
+
+    footer p {
+      margin: 4px 0;
+    }
+
+    /* 17. Responsive Media Queries (Tablet & Smartphone) */
+    @media (max-width: 960px) {
+      .events-grid,
+      .clubs-grid,
+      .packages-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .stats-grid,
+      .sponsor-logos {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .filter-bar {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .nav-container {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .hero h1 {
+        font-size: 1.65rem;
+      }
+
+      .events-grid,
+      .clubs-grid,
+      .packages-grid,
+      .stats-grid,
+      .sponsor-logos,
+      .filter-bar,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .form-group.full-width {
+        grid-column: span 1;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== 1. HEADER & NAVIGATION ==================== -->
+  <header>
+    <div class="container nav-container">
+      <a href="#top" class="logo">College Event Portal</a>
+      <nav aria-label="Main Navigation">
+        <ul>
+          <li><a href="#events">Events</a></li>
+          <li><a href="#my-registrations">My Registrations</a></li>
+          <li><a href="#clubs">Clubs</a></li>
+          <li><a href="#add-event">Organizers</a></li>
+          <li><a href="#admin-dashboard">Admin</a></li>
+          <li><a href="#sponsors">Sponsors</a></li>
+          <li>
+            <button id="themeToggle" class="theme-btn" type="button">Dark Mode</button>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main id="top">
+
+    <!-- ==================== HERO SECTION (PROBLEM STATEMENT + COUNTDOWN) ==================== -->
+    <section class="hero">
+      <div class="container">
+        <span class="hero-tag">Centralized Campus Event Hub</span>
+        <h1>Discover, Register &amp; Manage All College Events in One Place</h1>
+        <p>
+          No more missing deadlines across scattered WhatsApp groups, notice boards, or social media pages.
+          Browse verified campus activities, register online in seconds, and track all your passes here.
+        </p>
+
+        <p class="countdown-label">Countdown to Flagship Event: Annual TechFest &amp; Hackathon 2026</p>
+        <div class="countdown-box" aria-label="Live Event Countdown Timer">
+          <div class="time-unit">
+            <span id="days">00</span>
+            <small>Days</small>
+          </div>
+          <div class="time-unit">
+            <span id="hours">00</span>
+            <small>Hours</small>
+          </div>
+          <div class="time-unit">
+            <span id="minutes">00</span>
+            <small>Minutes</small>
+          </div>
+          <div class="time-unit">
+            <span id="seconds">00</span>
+            <small>Seconds</small>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+
+      <!-- ==================== USER 1: COLLEGE STUDENTS (EVENTS DISCOVERY) ==================== -->
+      <section id="events">
+        <div class="section-header">
+          <div>
+            <span class="role-label">For College Students</span>
+            <h2 class="section-title">Upcoming College Events</h2>
+            <p class="section-subtitle">Search events, filter by category or organizing club, and register online before the deadline.</p>
+          </div>
+        </div>
+
+        <!-- Search, Category & Club Filter Bar -->
+        <div class="filter-bar">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search by event title, venue, or description..."
+            aria-label="Search events"
+          >
+          <select id="categoryFilter" aria-label="Filter by category">
+            <option value="All">All Categories</option>
+            <option value="Technical">Technical</option>
+            <option value="Cultural">Cultural</option>
+            <option value="Sports">Sports</option>
+            <option value="Workshop">Workshop</option>
+            <option value="Seminar">Seminar</option>
+            <option value="Hackathon">Hackathon</option>
+          </select>
+          <select id="clubFilter" aria-label="Filter by club">
+            <option value="All">All Clubs &amp; Societies</option>
+            <option value="Coding Club">Coding Club</option>
+            <option value="Cultural Society">Cultural Society</option>
+            <option value="Robotics Club">Robotics Club</option>
+            <option value="Sports Council">Sports Council</option>
+            <option value="Entrepreneurship Cell">Entrepreneurship Cell</option>
+            <option value="College Administration">College Administration</option>
+          </select>
+          <button type="button" id="clearFiltersBtn" class="btn btn-secondary">Clear Filters</button>
+        </div>
+
+        <!-- Dynamic Event Cards Grid -->
+        <div id="eventsGrid" class="events-grid"></div>
+      </section>
+
+      <!-- ==================== USER 1 (PART B): MY REGISTRATIONS ==================== -->
+      <section id="my-registrations">
+        <div class="section-header">
+          <div>
+            <span class="role-label">For College Students</span>
+            <h2 class="section-title">My Registered Events</h2>
+            <p class="section-subtitle">Track all your confirmed registrations and unique pass IDs saved in browser storage.</p>
+          </div>
+        </div>
+
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Registration ID</th>
+                <th>Event Title</th>
+                <th>Organizing Club</th>
+                <th>Date &amp; Time</th>
+                <th>Student Details</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody id="registrationsTableBody">
+              <!-- Populated dynamically by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ==================== USER 2: STUDENT CLUBS & SOCIETIES ==================== -->
+      <section id="clubs">
+        <div class="section-header">
+          <div>
+            <span class="role-label">For Student Clubs &amp; Societies</span>
+            <h2 class="section-title">Campus Clubs &amp; Societies</h2>
+            <p class="section-subtitle">Explore active student organizations and click any club to view their upcoming events.</p>
+          </div>
+        </div>
+
+        <div id="clubsGrid" class="clubs-grid">
+          <!-- Club cards populated by JavaScript -->
+        </div>
+      </section>
+
+      <!-- ==================== USER 3: EVENT ORGANIZERS (ADD EVENT FORM) ==================== -->
+      <section id="add-event">
+        <div class="section-header">
+          <div>
+            <span class="role-label">For Event Organizers &amp; Clubs</span>
+            <h2 class="section-title">Publish a New Event</h2>
+            <p class="section-subtitle">Organizers can add complete event details, seat limits, fees, and registration deadlines below.</p>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <form id="addEventForm" novalidate>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="newTitle">Event Title *</label>
+                <input type="text" id="newTitle" placeholder="e.g., Inter-College Web Dev Sprint">
+                <span class="error-msg" id="err-newTitle"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="newCategory">Category *</label>
+                <select id="newCategory">
+                  <option value="">-- Select Category --</option>
+                  <option value="Technical">Technical</option>
+                  <option value="Cultural">Cultural</option>
+                  <option value="Sports">Sports</option>
+                  <option value="Workshop">Workshop</option>
+                  <option value="Seminar">Seminar</option>
+                  <option value="Hackathon">Hackathon</option>
+                </select>
+                <span class="error-msg" id="err-newCategory"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="newClub">Organizing Club / Department *</label>
+                <select id="newClub">
+                  <option value="">-- Select Club --</option>
+                  <option value="Coding Club">Coding Club</option>
+                  <option value="Cultural Society">Cultural Society</option>
+                  <option value="Robotics Club">Robotics Club</option>
+                  <option value="Sports Council">Sports Council</option>
+                  <option value="Entrepreneurship Cell">Entrepreneurship Cell</option>
+                  <option value="College Administration">College Administration</option>
+                </select>
+                <span class="error-msg" id="err-newClub"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="newVenue">Venue *</label>
+                <input type="text" id="newVenue" placeholder="e.g., Block 34 Auditorium">
+                <span class="error-msg" id="err-newVenue"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="newDate">Event Date *</label>
+                <input type="date" id="newDate">
+                <span class="error-msg" id="err-newDate"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="newTime">Start Time *</label>
+                <input type="time" id="newTime">
+                <span class="error-msg" id="err-newTime"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="newDeadline">Registration Deadline *</label>
+                <input type="date" id="newDeadline">
+                <span class="error-msg" id="err-newDeadline"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="newSeats">Maximum Seats *</label>
+                <input type="number" id="newSeats" min="5" placeholder="e.g., 100">
+                <span class="error-msg" id="err-newSeats"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="newFee">Registration Fee (₹) *</label>
+                <input type="number" id="newFee" min="0" value="0" placeholder="0 for Free">
+                <span class="error-msg" id="err-newFee"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="newEligibility">Eligibility Criteria *</label>
+                <input type="text" id="newEligibility" placeholder="e.g., All B.Tech &amp; BCA Students">
+                <span class="error-msg" id="err-newEligibility"></span>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="newDescription">Event Description *</label>
+                <textarea id="newDescription" rows="3" placeholder="Provide agenda, prizes, and key highlights..."></textarea>
+                <span class="error-msg" id="err-newDescription"></span>
+              </div>
+
+              <div class="form-group full-width">
+                <div class="checkbox-group">
+                  <input type="checkbox" id="newFeatured">
+                  <label for="newFeatured" style="margin-bottom: 0; cursor: pointer;">
+                    Featured / Sponsored Listing (Highlight at the top of Events)
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="padding: 12px 24px;">Publish Event</button>
+          </form>
+        </div>
+      </section>
+
+      <!-- ==================== USER 4: COLLEGE ADMINISTRATION (ADMIN DASHBOARD) ==================== -->
+      <section id="admin-dashboard">
+        <div class="section-header">
+          <div>
+            <span class="role-label">For College Administration</span>
+            <h2 class="section-title">Admin Dashboard &amp; Event Monitoring</h2>
+            <p class="section-subtitle">Monitor campus-wide events, verify official listings, track registrations, or reset demo data.</p>
+          </div>
+          <button type="button" id="resetDemoBtn" class="btn btn-secondary">Reset Demo Data</button>
+        </div>
+
+        <!-- Live Summary Metric Cards -->
+        <div class="stats-grid">
+          <article class="stat-card">
+            <div class="stat-number" id="statTotalEvents">0</div>
+            <div class="stat-label">Total Events</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-number" id="statTotalRegs">0</div>
+            <div class="stat-label">Total Student Registrations</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-number" id="statActiveClubs">5</div>
+            <div class="stat-label">Active Clubs</div>
+          </article>
+          <article class="stat-card">
+            <div class="stat-number" id="statFeaturedEvents">0</div>
+            <div class="stat-label">Featured / Sponsored Events</div>
+          </article>
+        </div>
+
+        <!-- Admin Event Management Table -->
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Event Title</th>
+                <th>Organizing Club</th>
+                <th>Date</th>
+                <th>Registrations</th>
+                <th>Admin Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="adminTableBody">
+              <!-- Populated dynamically by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ==================== USER 5: SPONSORS & BUSINESS PARTNERS ==================== -->
+      <section id="sponsors">
+        <div class="section-header">
+          <div>
+            <span class="role-label">For Sponsors &amp; Business Partners</span>
+            <h2 class="section-title">Sponsors, Featured Listings &amp; Partnerships</h2>
+            <p class="section-subtitle">Partner with campus events to reach thousands of college students through sponsorships and featured placements.</p>
+          </div>
+        </div>
+
+        <!-- Featured Campus Sponsors Showcase -->
+        <div class="sponsor-logos">
+          <div class="sponsor-logo-box">
+            TechNova Solutions
+            <small>Title Hackathon Partner</small>
+          </div>
+          <div class="sponsor-logo-box">
+            CodeCraft Academy
+            <small>Workshop Knowledge Partner</small>
+          </div>
+          <div class="sponsor-logo-box">
+            CampusBrew Cafe
+            <small>Cultural Fest Refreshments</small>
+          </div>
+          <div class="sponsor-logo-box">
+            NextGen Hardware
+            <small>Robotics Expo Sponsor</small>
+          </div>
+        </div>
+
+        <!-- 3 Promotion & Monetization Packages -->
+        <div class="packages-grid">
+          <article class="package-card">
+            <h3>Featured Event Listing</h3>
+            <p>Ideal for student clubs and departments wanting top placement and a highlighted badge on the portal homepage.</p>
+            <div class="package-price">₹499 / Event</div>
+          </article>
+
+          <article class="package-card">
+            <h3>Event Co-Sponsor</h3>
+            <p>Ideal for local businesses and tech companies sponsoring hackathons, workshops, sports meets, or cultural nights.</p>
+            <div class="package-price">₹4,999 / Event</div>
+          </article>
+
+          <article class="package-card">
+            <h3>Campus Brand Partner</h3>
+            <p>Semester-long brand visibility across all event pages, student passes, and campus promotional campaigns.</p>
+            <div class="package-price">₹14,999 / Semester</div>
+          </article>
+        </div>
+
+        <!-- Validated Sponsorship Inquiry Form -->
+        <div class="form-card">
+          <h3 style="margin-bottom: 6px;">Submit a Sponsorship or Promotion Inquiry</h3>
+          <p class="section-subtitle" style="margin-bottom: 16px;">
+            Saved inquiries in this browser: <strong id="inquiryCount">0</strong>
+          </p>
+
+          <form id="sponsorForm" novalidate>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="spName">Company / Organization Name *</label>
+                <input type="text" id="spName" placeholder="e.g., InnovateTech Pvt. Ltd.">
+                <span class="error-msg" id="err-spName"></span>
+              </div>
+
+              <div class="form-group">
+                <label for="spEmail">Official Email Address *</label>
+                <input type="email" id="spEmail" placeholder="e.g., partnerships@company.com">
+                <span class="error-msg" id="err-spEmail"></span>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="spPackage">Select Partnership Package *</label>
+                <select id="spPackage">
+                  <option value="">-- Choose a Package --</option>
+                  <option value="Featured Event Listing">Featured Event Listing (₹499 / Event)</option>
+                  <option value="Event Co-Sponsor">Event Co-Sponsor (₹4,999 / Event)</option>
+                  <option value="Campus Brand Partner">Campus Brand Partner (₹14,999 / Semester)</option>
+                </select>
+                <span class="error-msg" id="err-spPackage"></span>
+              </div>
+
+              <div class="form-group full-width">
+                <label for="spMessage">Inquiry Details *</label>
+                <textarea id="spMessage" rows="3" placeholder="Share your sponsorship goals or event promotion requirements..."></textarea>
+                <span class="error-msg" id="err-spMessage"></span>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="padding: 11px 22px;">Submit Inquiry</button>
+            <div id="sponsorSuccess" class="success-box">
+              Thank you! Your sponsorship inquiry has been saved. Our campus coordination team will reach out shortly.
+            </div>
+          </form>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <!-- ==================== STUDENT REGISTRATION MODAL POPUP ==================== -->
+  <div id="registrationModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Student Event Registration</h3>
+        <button type="button" id="closeModalBtn" class="close-btn" aria-label="Close modal">&times;</button>
+      </div>
+
+      <form id="registrationForm" novalidate>
+        <input type="hidden" id="regEventId">
+
+        <div class="form-group">
+          <label for="regEventName">Selected Event</label>
+          <input type="text" id="regEventName" readonly>
+        </div>
+
+        <div class="form-group">
+          <label for="studentName">Student Full Name *</label>
+          <input type="text" id="studentName" placeholder="e.g., Ananya Sharma">
+          <span class="error-msg" id="err-studentName"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="studentRegNo">Registration Number *</label>
+          <input type="text" id="studentRegNo" placeholder="e.g., 12604589">
+          <span class="error-msg" id="err-studentRegNo"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="studentEmail">College Email *</label>
+          <input type="email" id="studentEmail" placeholder="e.g., ananya@college.edu">
+          <span class="error-msg" id="err-studentEmail"></span>
+        </div>
+
+        <div class="form-group">
+          <label for="studentPhone">10-Digit Phone Number *</label>
+          <input type="tel" id="studentPhone" maxlength="10" placeholder="e.g., 9876543210">
+          <span class="error-msg" id="err-studentPhone"></span>
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="studentBranch">Branch *</label>
+            <input type="text" id="studentBranch" placeholder="e.g., B.Tech CSE">
+            <span class="error-msg" id="err-studentBranch"></span>
+          </div>
+
+          <div class="form-group">
+            <label for="studentYear">Academic Year *</label>
+            <select id="studentYear">
+              <option value="">-- Select Year --</option>
+              <option value="1st Year">1st Year</option>
+              <option value="2nd Year">2nd Year</option>
+              <option value="3rd Year">3rd Year</option>
+              <option value="4th Year">4th Year</option>
+            </select>
+            <span class="error-msg" id="err-studentYear"></span>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" id="cancelModalBtn" class="btn btn-secondary">Cancel</button>
+          <button type="submit" class="btn btn-primary">Confirm Registration</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Notification Toast Banner -->
+  <div id="statusBanner" role="status" aria-live="polite"></div>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer>
+    <div class="container">
+      <p><strong>College Event Management Portal — CSE326 Internet Programming Project</strong></p>
+      <p>&copy; 2026 Built with Semantic HTML5, Pure CSS3 &amp; Vanilla JavaScript. Ready for GitHub &amp; Live Deployment.</p>
+    </div>
+  </footer>
+
+  <!-- ==================== CLEAN VANILLA JAVASCRIPT ==================== -->
+  <script>
+    /* =========================================================================
+       1. INITIAL DATA: 5 CAMPUS CLUBS & PRE-LOADED COLLEGE EVENTS
+       ========================================================================= */
+    const campusClubs = [
+      {
+        name: "Coding Club",
+        members: 320,
+        description: "Organizes hackathons, competitive programming contests, and web development bootcamps for tech enthusiasts."
+      },
+      {
+        name: "Cultural Society",
+        members: 245,
+        description: "Hosts annual music nights, dance battles, drama festivals, and art exhibitions across the university."
+      },
+      {
+        name: "Robotics Club",
+        members: 160,
+        description: "Focuses on Arduino, IoT sensors, autonomous bots, and hands-on hardware innovation expos."
+      },
+      {
+        name: "Sports Council",
+        members: 410,
+        description: "Manages inter-department cricket, football, badminton, and athletics tournaments on campus."
+      },
+      {
+        name: "Entrepreneurship Cell",
+        members: 190,
+        description: "Conducts startup pitch competitions, founder seminars, and business ideation workshops."
+      }
+    ];
+
+    const defaultEvents = [
+      {
+        id: 101,
+        title: "Annual TechFest & Hackathon 2026",
+        category: "Hackathon",
+        club: "Coding Club",
+        date: "2026-12-15",
+        time: "09:00",
+        deadline: "2026-12-12",
+        venue: "Block 34 Innovation Arena",
+        maxSeats: 120,
+        seatsAvailable: 34,
+        eligibility: "All B.Tech & BCA Students",
+        fee: 150,
+        featured: true,
+        verified: true,
+        description: "24-hour coding hackathon to build practical web and AI solutions for campus challenges with cash prizes."
+      },
+      {
+        id: 102,
+        title: "HTML5, CSS3 & JavaScript Bootcamp",
+        category: "Workshop",
+        club: "Coding Club",
+        date: "2026-11-28",
+        time: "14:00",
+        deadline: "2026-11-26",
+        venue: "Computer Lab 204",
+        maxSeats: 60,
+        seatsAvailable: 18,
+        eligibility: "1st & 2nd Year CSE Students",
+        fee: 0,
+        featured: true,
+        verified: true,
+        description: "Hands-on beginner workshop covering responsive web design, form validation, and live project deployment."
+      },
+      {
+        id: 103,
+        title: "Winter Cultural Night & Battle of Bands",
+        category: "Cultural",
+        club: "Cultural Society",
+        date: "2026-12-06",
+        time: "18:00",
+        deadline: "2026-12-04",
+        venue: "Open Air Auditorium",
+        maxSeats: 300,
+        seatsAvailable: 92,
+        eligibility: "Open to All University Students",
+        fee: 100,
+        featured: false,
+        verified: true,
+        description: "An evening of live college bands, solo singing, group dance performances, and student food stalls."
+      },
+      {
+        id: 104,
+        title: "Inter-Department Football & Athletics Cup",
+        category: "Sports",
+        club: "Sports Council",
+        date: "2026-12-09",
+        time: "08:30",
+        deadline: "2026-12-05",
+        venue: "University Main Stadium",
+        maxSeats: 150,
+        seatsAvailable: 44,
+        eligibility: "All Full-Time Students",
+        fee: 50,
+        featured: false,
+        verified: true,
+        description: "Annual inter-hostel and inter-department sports tournament featuring 7-a-side football and track events."
+      },
+      {
+        id: 105,
+        title: "Smart Robotics & IoT Prototype Expo",
+        category: "Technical",
+        club: "Robotics Club",
+        date: "2026-12-11",
+        time: "10:30",
+        deadline: "2026-12-08",
+        venue: "Block 28 Exhibition Hall",
+        maxSeats: 100,
+        seatsAvailable: 39,
+        eligibility: "All Engineering Students",
+        fee: 0,
+        featured: false,
+        verified: true,
+        description: "Showcase your line-follower robots, smart campus IoT sensors, and embedded hardware projects."
+      },
+      {
+        id: 106,
+        title: "Startup Pitch & Founder Talk Seminar",
+        category: "Seminar",
+        club: "Entrepreneurship Cell",
+        date: "2026-12-03",
+        time: "11:00",
+        deadline: "2026-12-01",
+        venue: "Seminar Hall B",
+        maxSeats: 140,
+        seatsAvailable: 61,
+        eligibility: "Open to All Departments",
+        fee: 0,
+        featured: false,
+        verified: false,
+        description: "Interactive session with young startup founders on validating student ideas and building MVPs."
+      }
+    ];
+
+    /* =========================================================================
+       2. BROWSER STORAGE (localStorage API) LOAD & SAVE HELPERS
+       ========================================================================= */
+    function loadFromStorage(key, fallbackValue) {
+      try {
+        const stored = localStorage.getItem(key);
+        return stored ? JSON.parse(stored) : JSON.parse(JSON.stringify(fallbackValue));
+      } catch (error) {
+        return JSON.parse(JSON.stringify(fallbackValue));
+      }
+    }
+
+    let events = loadFromStorage("portalEvents_v2", defaultEvents);
+    let registrations = loadFromStorage("portalRegistrations_v2", []);
+    let sponsorInquiries = loadFromStorage("portalSponsorInquiries_v2", []);
+
+    function saveAllData() {
+      try {
+        localStorage.setItem("portalEvents_v2", JSON.stringify(events));
+        localStorage.setItem("portalRegistrations_v2", JSON.stringify(registrations));
+        localStorage.setItem("portalSponsorInquiries_v2", JSON.stringify(sponsorInquiries));
+      } catch (error) {
+        showMessage("Could not save data to browser storage.", true);
+      }
+    }
+
+    /* =========================================================================
+       3. UI HELPER: NOTIFICATION BANNER & FORM ERROR CLEARING
+       ========================================================================= */
+    function showMessage(messageText, isError) {
+      const banner = document.getElementById("statusBanner");
+      banner.textContent = messageText;
+
+      if (isError) {
+        banner.classList.add("error-banner");
+      } else {
+        banner.classList.remove("error-banner");
+      }
+
+      banner.style.display = "block";
+      setTimeout(function () {
+        banner.style.display = "none";
+      }, 3200);
+    }
+
+    function clearFormErrors(formElement) {
+      const errorMessages = formElement.querySelectorAll(".error-msg");
+      errorMessages.forEach(function (span) {
+        span.textContent = "";
+      });
+    }
+
+    /* =========================================================================
+       4. DARK / LIGHT MODE TOGGLE (SAVED IN localStorage)
+       ========================================================================= */
+    const themeToggleBtn = document.getElementById("themeToggle");
+
+    if (localStorage.getItem("portalTheme_v2") === "dark") {
+      document.body.classList.add("dark-mode");
+      themeToggleBtn.textContent = "Light Mode";
+    }
+
+    themeToggleBtn.addEventListener("click", function () {
+      document.body.classList.toggle("dark-mode");
+
+      if (document.body.classList.contains("dark-mode")) {
+        localStorage.setItem("portalTheme_v2", "dark");
+        themeToggleBtn.textContent = "Light Mode";
+      } else {
+        localStorage.setItem("portalTheme_v2", "light");
+        themeToggleBtn.textContent = "Dark Mode";
+      }
+    });
+
+    /* =========================================================================
+       5. LIVE COUNTDOWN TIMER (setInterval)
+       ========================================================================= */
+    const flagshipDate = new Date("2026-12-15T09:00:00").getTime();
+
+    function updateCountdown() {
+      const now = new Date().getTime();
+      const diff = flagshipDate - now;
+
+      if (diff <= 0) {
+        document.getElementById("days").textContent = "00";
+        document.getElementById("hours").textContent = "00";
+        document.getElementById("minutes").textContent = "00";
+        document.getElementById("seconds").textContent = "00";
+        return;
+      }
+
+      const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const h = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const m = Math.floor((diff / (1000 * 60)) % 60);
+      const s = Math.floor((diff / 1000) % 60);
+
+      document.getElementById("days").textContent = d < 10 ? "0" + d : d;
+      document.getElementById("hours").textContent = h < 10 ? "0" + h : h;
+      document.getElementById("minutes").textContent = m < 10 ? "0" + m : m;
+      document.getElementById("seconds").textContent = s < 10 ? "0" + s : s;
+    }
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    /* =========================================================================
+       6. RENDER EVENTS GRID WITH SEARCH, CATEGORY & CLUB FILTERING
+       ========================================================================= */
+    const eventsGrid = document.getElementById("eventsGrid");
+    const searchInput = document.getElementById("searchInput");
+    const categoryFilter = document.getElementById("categoryFilter");
+    const clubFilter = document.getElementById("clubFilter");
+    const clearFiltersBtn = document.getElementById("clearFiltersBtn");
+
+    function renderEvents() {
+      const searchText = searchInput.value.toLowerCase().trim();
+      const selectedCategory = categoryFilter.value;
+      const selectedClub = clubFilter.value;
+
+      // Filter events using Array.filter()
+      const filtered = events.filter(function (ev) {
+        const matchesSearch =
+          ev.title.toLowerCase().includes(searchText) ||
+          ev.venue.toLowerCase().includes(searchText) ||
+          ev.description.toLowerCase().includes(searchText);
+        const matchesCategory = selectedCategory === "All" || ev.category === selectedCategory;
+        const matchesClub = selectedClub === "All" || ev.club === selectedClub;
+
+        return matchesSearch && matchesCategory && matchesClub;
+      });
+
+      // Display Featured / Sponsored events first
+      filtered.sort(function (a, b) {
+        return (b.featured === true) - (a.featured === true);
+      });
+
+      eventsGrid.innerHTML = "";
+
+      if (filtered.length === 0) {
+        eventsGrid.innerHTML =
+          '<p class="empty-message" style="grid-column: 1 / -1;">No college events match your current search or filter.</p>';
+        return;
+      }
+
+      filtered.forEach(function (ev) {
+        const isRegistered = registrations.some(function (reg) {
+          return reg.eventId === ev.id;
+        });
+
+        const isFull = ev.seatsAvailable <= 0;
+        const feeText = Number(ev.fee) === 0 ? "Free" : "₹" + ev.fee;
+
+        let btnText = "Register Now";
+        let btnDisabled = "";
+
+        if (isRegistered) {
+          btnText = "Already Registered";
+          btnDisabled = "disabled";
+        } else if (isFull) {
+          btnText = "Seats Full";
+          btnDisabled = "disabled";
+        }
+
+        const card = document.createElement("article");
+        card.className = ev.featured ? "event-card featured-card" : "event-card";
+
+        card.innerHTML = `
+          <div>
+            <div class="badge-row">
+              <div class="badge-group">
+                <span class="badge badge-category">${ev.category}</span>
+                ${ev.featured ? '<span class="badge badge-featured">Featured / Sponsored</span>' : ""}
+                ${ev.verified ? '<span class="badge badge-verified">Official</span>' : ""}
+              </div>
+              <span class="badge badge-fee">${feeText}</span>
+            </div>
+
+            <h3>${ev.title}</h3>
+            <div class="event-club">Organized by: ${ev.club}</div>
+            <p class="event-desc">${ev.description}</p>
+
+            <ul class="event-details">
+              <li><strong>Date &amp; Time:</strong> ${ev.date} at ${ev.time}</li>
+              <li><strong>Venue:</strong> ${ev.venue}</li>
+              <li><strong>Eligibility:</strong> ${ev.eligibility}</li>
+              <li><strong>Reg. Deadline:</strong> ${ev.deadline}</li>
+              <li><strong>Seats Available:</strong> ${ev.seatsAvailable} / ${ev.maxSeats}</li>
+            </ul>
+          </div>
+
+          <button type="button" class="btn btn-primary btn-full" ${btnDisabled} onclick="openRegistrationModal(${ev.id})">
+            ${btnText}
+          </button>
+        `;
+
+        eventsGrid.appendChild(card);
+      });
+    }
+
+    searchInput.addEventListener("input", renderEvents);
+    categoryFilter.addEventListener("change", renderEvents);
+    clubFilter.addEventListener("change", renderEvents);
+
+    clearFiltersBtn.addEventListener("click", function () {
+      searchInput.value = "";
+      categoryFilter.value = "All";
+      clubFilter.value = "All";
+      renderEvents();
+    });
+
+    /* =========================================================================
+       7. STUDENT REGISTRATION MODAL & FORM VALIDATION
+       ========================================================================= */
+    const regModal = document.getElementById("registrationModal");
+    const regForm = document.getElementById("registrationForm");
+
+    function openRegistrationModal(eventId) {
+      const selectedEvent = events.find(function (ev) {
+        return ev.id === eventId;
+      });
+      if (!selectedEvent) return;
+
+      regForm.reset();
+      clearFormErrors(regForm);
+
+      document.getElementById("regEventId").value = selectedEvent.id;
+      document.getElementById("regEventName").value = selectedEvent.title;
+      regModal.classList.add("show");
+    }
+
+    function closeRegistrationModal() {
+      regModal.classList.remove("show");
+    }
+
+    document.getElementById("closeModalBtn").addEventListener("click", closeRegistrationModal);
+    document.getElementById("cancelModalBtn").addEventListener("click", closeRegistrationModal);
+
+    regForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      clearFormErrors(regForm);
+
+      const eventId = Number(document.getElementById("regEventId").value);
+      const name = document.getElementById("studentName").value.trim();
+      const regNo = document.getElementById("studentRegNo").value.trim();
+      const email = document.getElementById("studentEmail").value.trim();
+      const phone = document.getElementById("studentPhone").value.trim();
+      const branch = document.getElementById("studentBranch").value.trim();
+      const year = document.getElementById("studentYear").value;
+
+      let isValid = true;
+
+      if (name.length < 3) {
+        document.getElementById("err-studentName").textContent = "Enter your full name (minimum 3 characters).";
+        isValid = false;
+      }
+      if (regNo.length < 5) {
+        document.getElementById("err-studentRegNo").textContent = "Enter a valid registration number.";
+        isValid = false;
+      }
+      if (!email.includes("@") || !email.includes(".")) {
+        document.getElementById("err-studentEmail").textContent = "Enter a valid college email address.";
+        isValid = false;
+      }
+      if (!/^\d{10}$/.test(phone)) {
+        document.getElementById("err-studentPhone").textContent = "Phone number must be exactly 10 digits.";
+        isValid = false;
+      }
+      if (branch.length < 2) {
+        document.getElementById("err-studentBranch").textContent = "Enter your branch (e.g., B.Tech CSE).";
+        isValid = false;
+      }
+      if (year === "") {
+        document.getElementById("err-studentYear").textContent = "Select your academic year.";
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      // Duplicate Registration Check
+      const duplicate = registrations.some(function (r) {
+        return r.eventId === eventId && r.studentRegNo.toLowerCase() === regNo.toLowerCase();
+      });
+
+      if (duplicate) {
+        showMessage("This registration number is already registered for this event.", true);
+        return;
+      }
+
+      const targetEvent = events.find(function (ev) {
+        return ev.id === eventId;
+      });
+
+      if (!targetEvent || targetEvent.seatsAvailable <= 0) {
+        showMessage("Sorry, seats are full for this event.", true);
+        closeRegistrationModal();
+        return;
+      }
+
+      // Reduce seat count and create a unique Registration ID
+      targetEvent.seatsAvailable -= 1;
+      const uniqueRegId = "REG-2026-" + Math.floor(1000 + Math.random() * 9000);
+
+      registrations.push({
+        id: Date.now(),
+        regId: uniqueRegId,
+        eventId: targetEvent.id,
+        eventTitle: targetEvent.title,
+        eventClub: targetEvent.club,
+        eventDateTime: targetEvent.date + " (" + targetEvent.time + ")",
+        studentName: name,
+        studentRegNo: regNo,
+        studentEmail: email,
+        studentPhone: phone,
+        studentBranch: branch,
+        studentYear: year
+      });
+
+      saveAllData();
+      closeRegistrationModal();
+      refreshAllViews();
+      showMessage("Registered! Pass ID: " + uniqueRegId, false);
+    });
+
+    /* =========================================================================
+       8. MY REGISTRATIONS TABLE & CANCEL REGISTRATION (RESTORES SEAT)
+       ========================================================================= */
+    const registrationsTableBody = document.getElementById("registrationsTableBody");
+
+    function renderRegistrations() {
+      registrationsTableBody.innerHTML = "";
+
+      if (registrations.length === 0) {
+        registrationsTableBody.innerHTML =
+          '<tr><td colspan="6" class="empty-message">You have not registered for any events yet.</td></tr>';
+        return;
+      }
+
+      registrations.forEach(function (reg) {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><strong>${reg.regId}</strong></td>
+          <td>${reg.eventTitle}</td>
+          <td>${reg.eventClub}</td>
+          <td>${reg.eventDateTime}</td>
+          <td>${reg.studentName} (${reg.studentRegNo})<br><small>${reg.studentBranch}, ${reg.studentYear}</small></td>
+          <td>
+            <button type="button" class="btn btn-danger" onclick="cancelRegistration(${reg.id})">
+              Cancel Registration
+            </button>
+          </td>
+        `;
+        registrationsTableBody.appendChild(row);
+      });
+    }
+
+    function cancelRegistration(recordId) {
+      const index = registrations.findIndex(function (r) {
+        return r.id === recordId;
+      });
+      if (index === -1) return;
+
+      const removed = registrations[index];
+
+      // Restore 1 seat to the corresponding event
+      const matchedEvent = events.find(function (ev) {
+        return ev.id === removed.eventId;
+      });
+      if (matchedEvent && matchedEvent.seatsAvailable < matchedEvent.maxSeats) {
+        matchedEvent.seatsAvailable += 1;
+      }
+
+      registrations.splice(index, 1);
+      saveAllData();
+      refreshAllViews();
+      showMessage("Registration cancelled and seat restored.", false);
+    }
+
+    /* =========================================================================
+       9. STUDENT CLUBS & SOCIETIES SECTION + CLUB FILTERING
+       ========================================================================= */
+    const clubsGrid = document.getElementById("clubsGrid");
+
+    function renderClubs() {
+      clubsGrid.innerHTML = "";
+
+      campusClubs.forEach(function (club) {
+        const clubEventCount = events.filter(function (ev) {
+          return ev.club === club.name;
+        }).length;
+
+        const card = document.createElement("article");
+        card.className = "club-card";
+
+        card.innerHTML = `
+          <div>
+            <h3>${club.name}</h3>
+            <div class="club-meta">${club.members} Active Members &bull; ${clubEventCount} Upcoming Event(s)</div>
+            <p>${club.description}</p>
+          </div>
+          <button type="button" class="btn btn-primary btn-full" onclick="filterByClub('${club.name}')">
+            View Club Events
+          </button>
+        `;
+
+        clubsGrid.appendChild(card);
+      });
+    }
+
+    function filterByClub(clubName) {
+      searchInput.value = "";
+      categoryFilter.value = "All";
+      clubFilter.value = clubName;
+      renderEvents();
+
+      document.getElementById("events").scrollIntoView({ behavior: "smooth" });
+      showMessage("Showing events organized by " + clubName, false);
+    }
+
+    /* =========================================================================
+       10. ORGANIZER PORTAL: ADD NEW EVENT FORM VALIDATION
+       ========================================================================= */
+    const addEventForm = document.getElementById("addEventForm");
+
+    addEventForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      clearFormErrors(addEventForm);
+
+      const title = document.getElementById("newTitle").value.trim();
+      const category = document.getElementById("newCategory").value;
+      const club = document.getElementById("newClub").value;
+      const venue = document.getElementById("newVenue").value.trim();
+      const date = document.getElementById("newDate").value;
+      const time = document.getElementById("newTime").value;
+      const deadline = document.getElementById("newDeadline").value;
+      const seats = Number(document.getElementById("newSeats").value);
+      const fee = Number(document.getElementById("newFee").value);
+      const eligibility = document.getElementById("newEligibility").value.trim();
+      const description = document.getElementById("newDescription").value.trim();
+      const featured = document.getElementById("newFeatured").checked;
+
+      let isValid = true;
+
+      if (title.length < 4) {
+        document.getElementById("err-newTitle").textContent = "Event title must be at least 4 characters.";
+        isValid = false;
+      }
+      if (category === "") {
+        document.getElementById("err-newCategory").textContent = "Please select an event category.";
+        isValid = false;
+      }
+      if (club === "") {
+        document.getElementById("err-newClub").textContent = "Please select the organizing club.";
+        isValid = false;
+      }
+      if (venue.length < 3) {
+        document.getElementById("err-newVenue").textContent = "Please enter the venue.";
+        isValid = false;
+      }
+      if (date === "") {
+        document.getElementById("err-newDate").textContent = "Please choose the event date.";
+        isValid = false;
+      }
+      if (time === "") {
+        document.getElementById("err-newTime").textContent = "Please choose the start time.";
+        isValid = false;
+      }
+      if (deadline === "") {
+        document.getElementById("err-newDeadline").textContent = "Please set a registration deadline.";
+        isValid = false;
+      }
+      if (isNaN(seats) || seats < 5) {
+        document.getElementById("err-newSeats").textContent = "Maximum seats must be at least 5.";
+        isValid = false;
+      }
+      if (isNaN(fee) || fee < 0) {
+        document.getElementById("err-newFee").textContent = "Fee cannot be negative (use 0 for Free).";
+        isValid = false;
+      }
+      if (eligibility.length < 3) {
+        document.getElementById("err-newEligibility").textContent = "Please specify student eligibility.";
+        isValid = false;
+      }
+      if (description.length < 10) {
+        document.getElementById("err-newDescription").textContent = "Enter at least 10 characters for description.";
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      events.unshift({
+        id: Date.now(),
+        title: title,
+        category: category,
+        club: club,
+        date: date,
+        time: time,
+        deadline: deadline,
+        venue: venue,
+        maxSeats: seats,
+        seatsAvailable: seats,
+        eligibility: eligibility,
+        fee: fee,
+        featured: featured,
+        verified: false,
+        description: description
+      });
+
+      saveAllData();
+      addEventForm.reset();
+      refreshAllViews();
+      showMessage("Event '" + title + "' published successfully!", false);
+    });
+
+    /* =========================================================================
+       11. COLLEGE ADMINISTRATION: LIVE DASHBOARD, VERIFY, REMOVE & RESET DEMO
+       ========================================================================= */
+    const adminTableBody = document.getElementById("adminTableBody");
+    const resetDemoBtn = document.getElementById("resetDemoBtn");
+
+    function renderAdminDashboard() {
+      // Update summary numbers
+      const featuredCount = events.filter(function (ev) {
+        return ev.featured === true;
+      }).length;
+
+      document.getElementById("statTotalEvents").textContent = events.length;
+      document.getElementById("statTotalRegs").textContent = registrations.length;
+      document.getElementById("statActiveClubs").textContent = campusClubs.length;
+      document.getElementById("statFeaturedEvents").textContent = featuredCount;
+
+      // Render Event Management Table
+      adminTableBody.innerHTML = "";
+
+      if (events.length === 0) {
+        adminTableBody.innerHTML =
+          '<tr><td colspan="6" class="empty-message">No events available. Use Reset Demo Data or Add Event.</td></tr>';
+        return;
+      }
+
+      events.forEach(function (ev) {
+        const registeredCount = ev.maxSeats - ev.seatsAvailable;
+        const statusBadge = ev.verified
+          ? '<span class="badge badge-verified">Official / Verified</span>'
+          : '<span class="badge badge-pending">Pending Review</span>';
+
+        const toggleBtnText = ev.verified ? "Unverify" : "Mark Official";
+        const toggleBtnClass = ev.verified ? "btn-warning" : "btn-success";
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td><strong>${ev.title}</strong></td>
+          <td>${ev.club}</td>
+          <td>${ev.date}</td>
+          <td>${registeredCount} / ${ev.maxSeats}</td>
+          <td>${statusBadge}</td>
+          <td>
+            <div class="action-buttons">
+              <button type="button" class="btn ${toggleBtnClass}" onclick="toggleVerifyEvent(${ev.id})">
+                ${toggleBtnText}
+              </button>
+              <button type="button" class="btn btn-danger" onclick="removeEvent(${ev.id})">
+                Remove
+              </button>
+            </div>
+          </td>
+        `;
+        adminTableBody.appendChild(row);
+      });
+    }
+
+    function toggleVerifyEvent(eventId) {
+      const target = events.find(function (ev) {
+        return ev.id === eventId;
+      });
+      if (!target) return;
+
+      target.verified = !target.verified;
+      saveAllData();
+      refreshAllViews();
+      showMessage(
+        target.verified ? "Event marked as Official / Verified." : "Event set to Pending Review.",
+        false
+      );
+    }
+
+    function removeEvent(eventId) {
+      events = events.filter(function (ev) {
+        return ev.id !== eventId;
+      });
+      registrations = registrations.filter(function (reg) {
+        return reg.eventId !== eventId;
+      });
+
+      saveAllData();
+      refreshAllViews();
+      showMessage("Event removed from the portal.", false);
+    }
+
+    resetDemoBtn.addEventListener("click", function () {
+      events = JSON.parse(JSON.stringify(defaultEvents));
+      registrations = [];
+      sponsorInquiries = [];
+      saveAllData();
+      refreshAllViews();
+      showMessage("Demo data has been reset to default.", false);
+    });
+
+    /* =========================================================================
+       12. SPONSORS & BUSINESS PARTNERS: VALIDATED INQUIRY FORM
+       ========================================================================= */
+    const sponsorForm = document.getElementById("sponsorForm");
+    const sponsorSuccess = document.getElementById("sponsorSuccess");
+
+    function renderInquiryCount() {
+      document.getElementById("inquiryCount").textContent = sponsorInquiries.length;
+    }
+
+    sponsorForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      clearFormErrors(sponsorForm);
+      sponsorSuccess.style.display = "none";
+
+      const spName = document.getElementById("spName").value.trim();
+      const spEmail = document.getElementById("spEmail").value.trim();
+      const spPackage = document.getElementById("spPackage").value;
+      const spMessage = document.getElementById("spMessage").value.trim();
+
+      let isValid = true;
+
+      if (spName.length < 3) {
+        document.getElementById("err-spName").textContent = "Enter your company or organization name.";
+        isValid = false;
+      }
+      if (!spEmail.includes("@") || !spEmail.includes(".")) {
+        document.getElementById("err-spEmail").textContent = "Enter a valid email address.";
+        isValid = false;
+      }
+      if (spPackage === "") {
+        document.getElementById("err-spPackage").textContent = "Please select a partnership package.";
+        isValid = false;
+      }
+      if (spMessage.length < 10) {
+        document.getElementById("err-spMessage").textContent = "Enter at least 10 characters in your inquiry.";
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      sponsorInquiries.push({
+        id: Date.now(),
+        organization: spName,
+        email: spEmail,
+        packageSelected: spPackage,
+        message: spMessage,
+        submittedAt: new Date().toLocaleDateString()
+      });
+
+      saveAllData();
+      sponsorForm.reset();
+      renderInquiryCount();
+      sponsorSuccess.style.display = "block";
+      showMessage("Sponsorship inquiry saved successfully!", false);
+    });
+
+    /* =========================================================================
+       13. MASTER REFRESH FUNCTION (INITIAL PAGE LOAD)
+       ========================================================================= */
+    function refreshAllViews() {
+      renderEvents();
+      renderRegistrations();
+      renderClubs();
+      renderAdminDashboard();
+      renderInquiryCount();
+    }
+
+    refreshAllViews();
+  </script>
+</body>
+</html>
